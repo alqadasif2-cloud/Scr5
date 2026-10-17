@@ -43,6 +43,11 @@
         tools:targetApi="tiramisu" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <!-- صلاحيات مسح رمز QR عبر الكاميرا -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+
     <application
         android:name=".SmartRemoteApp"
         android:allowBackup="true"
@@ -63,12 +68,11 @@
             </intent-filter>
         </activity>
 
-        <!-- واجهة التحكم في شاشة الكمبيوتر أو الهاتف المستهدف عن بعد -->
+        <!-- واجهة التحكم في شاشة الكمبيوتر أو الهاتف المستهدف عن بعد: اتجاه ديناميكي متكيف -->
         <activity
             android:name=".pc.PcScreenViewerActivity"
-            android:configChanges="orientation|screenSize|screenLayout"
-            android:exported="false"
-            android:screenOrientation="sensorLandscape" />
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:exported="false" />
 
         <!-- خدمة استضافة اتصالات الأجهزة والتحكم (Host Mode) -->
         <service

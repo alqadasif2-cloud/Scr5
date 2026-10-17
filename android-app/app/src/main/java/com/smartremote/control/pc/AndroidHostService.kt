@@ -168,34 +168,72 @@ class AndroidHostService : Service() {
 
     private fun executeInputEvent(json: JSONObject) {
         val subType = json.optString("subType")
-        val normX = json.optDouble("normalizedX", 0.0).toFloat()
-        val normY = json.optDouble("normalizedY", 0.0).toFloat()
+        val normX = json.optDouble("normalizedX", 0.0).toFloat().coerceIn(0f, 1f)
+        val normY = json.optDouble("normalizedY", 0.0).toFloat().coerceIn(0f, 1f)
 
-        val displayMetrics = resources.displayMetrics
-        val pixelX = normX * displayMetrics.widthPixels
-        val pixelY = normY * displayMetrics.heightPixels
+        // حساب أبعاد الشاشة الحقيقية الشاملة لـ MediaProjection (Real Metrics)
+        val windowManager = getSystemService(WINDOW_SERVICE) as android.view.WindowManager
+        val realWidth: Int
+        val realHeight: Int
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = windowManager.currentWindowMetrics
+            realWidth = windowMetrics.bounds.width()
+            realHeight = windowMetrics.bounds.height()
+        } else {
+            val dm = android.util.DisplayMetrics()
+            @Suppress("DEPRECATION")
+            windowManager.defaultDisplay.getRealMetrics(dm)
+            realWidth = dm.widthPixels
+            realHeight = dm.heightPixels
+        }
+
+        val pixelX = normX * realWidth
+        val pixelY = normY * realHeight
 
         val accessibility = RemoteAccessibilityService.instance
 
         when (subType) {
             "MOUSE_DOWN", "TOUCH_TAP" -> {
                 if (accessibility != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    accessibility.performTap(pixelX, pixelY, 50)
+                    val duration = json.optLong("durationMs", 50L)
+                    accessibility.performTap(pixelX, pixelY, duration)
+                    Log.d(TAG, "تنفيذ نقرة: ($pixelX, $pixelY) بمدة $duration ms")
                 } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                     Log.i(TAG, "محاكاة اللمس الحر غير مدعومة على إصدارات أقل من Android 7.0 (API 24)")
                 }
             }
 
-            "TOUCH_SWIPE", "MOUSE_WHEEL" -> {
+            "TOUCH_LONG_PRESS" -> {
                 if (accessibility != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    // سحب بسيط من الإحداثيات الحالية
-                    val endY = if (subType == "MOUSE_WHEEL") {
-                        val delta = json.optInt("wheelDelta", 120)
-                        pixelY + (if (delta > 0) 300f else -300f)
-                    } else {
-                        pixelY + 200f
-                    }
-                    accessibility.performSwipe(pixelX, pixelY, pixelX, endY, 250)
+                    val duration = json.optLong("durationMs", 800L).coerceIn(400L, 2000L)
+                    accessibility.performTap(pixelX, pixelY, duration)
+                    Log.d(TAG, "تنفيذ ضغطة مطولة: ($pixelX, $pixelY) بمدة $duration ms")
+                }
+            }
+
+            "TOUCH_SWIPE" -> {
+                if (accessibility != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    val endNormX = json.optDouble("endNormalizedX", normX.toDouble()).toFloat().coerceIn(0f, 1f)
+                    val endNormY = json.optDouble("endNormalizedY", normY.toDouble()).toFloat().coerceIn(0f, 1f)
+                    val durationMs = json.optLong("durationMs", 300L).coerceIn(100L, 1000L)
+
+                    val toPixelX = endNormX * realWidth
+                    val toPixelY = endNormY * realHeight
+
+                    accessibility.performSwipe(pixelX, pixelY, toPixelX, toPixelY, durationMs)
+                    Log.d(TAG, "تنفيذ إيماءة سحب: من ($pixelX, $pixelY) إلى ($toPixelX, $toPixelY) بمدة $durationMs ms")
+                }
+            }
+
+            "MOUSE_WHEEL" -> {
+                if (accessibility != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    val delta = json.optInt("wheelDelta", 120)
+                    // التمرير بمقدار 15% من ارتفاع الشاشة
+                    val scrollOffset = (realHeight * 0.15f) * (if (delta > 0) 1f else -1f)
+                    val toY = (pixelY + scrollOffset).coerceIn(0f, realHeight.toFloat())
+                    accessibility.performSwipe(pixelX, pixelY, pixelX, toY, 200L)
+                    Log.d(TAG, "تنفيذ تمرير عجلة الماوس: دلتا $delta")
                 }
             }
 
@@ -207,6 +245,7 @@ class AndroidHostService : Service() {
                         "RECENTS" -> accessibility.triggerRecents()
                         "NOTIFICATIONS" -> accessibility.triggerNotifications()
                     }
+                    Log.d(TAG, "تنفيذ زر نظام أندرويد: ${json.optString("globalAction")}")
                 }
             }
         }

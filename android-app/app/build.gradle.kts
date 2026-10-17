@@ -64,6 +64,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
+    // مكتبة تشفير وفك تشفير رموز الاستجابة السريعة QR Code
+    implementation("com.google.zxing:core:3.5.3")
+
     // اختبارات الوحدة
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")

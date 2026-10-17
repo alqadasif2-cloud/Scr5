@@ -195,20 +195,31 @@ class PcConnectionManager {
         webSocket?.send(json.toString())
     }
 
-    fun sendTouchEvent(subType: String, normX: Float, normY: Float) {
+    fun sendTouchEvent(subType: String, normX: Float, normY: Float, sourceWidth: Int = 0, sourceHeight: Int = 0) {
         if (!isConnected) return
         val json = JSONObject().apply {
             put("type", "INPUT_EVENT")
             put("sessionId", currentSessionId)
-            put("subType", subType) // TOUCH_TAP
+            put("subType", subType) // TOUCH_TAP or TOUCH_LONG_PRESS
             put("normalizedX", normX.toDouble())
             put("normalizedY", normY.toDouble())
+            if (sourceWidth > 0 && sourceHeight > 0) {
+                put("sourceWidth", sourceWidth)
+                put("sourceHeight", sourceHeight)
+            }
             put("timestamp", System.currentTimeMillis())
         }
         webSocket?.send(json.toString())
     }
 
-    fun sendSwipeEvent(startX: Float, startY: Float, endX: Float, endY: Float) {
+    fun sendSwipeEvent(
+        startX: Float,
+        startY: Float,
+        endX: Float,
+        endY: Float,
+        durationMs: Long = 300L,
+        gestureId: String = ""
+    ) {
         if (!isConnected) return
         val json = JSONObject().apply {
             put("type", "INPUT_EVENT")
@@ -218,6 +229,24 @@ class PcConnectionManager {
             put("normalizedY", startY.toDouble())
             put("endNormalizedX", endX.toDouble())
             put("endNormalizedY", endY.toDouble())
+            put("durationMs", durationMs)
+            if (gestureId.isNotEmpty()) {
+                put("gestureId", gestureId)
+            }
+            put("timestamp", System.currentTimeMillis())
+        }
+        webSocket?.send(json.toString())
+    }
+
+    fun sendLongPressEvent(normX: Float, normY: Float, durationMs: Long = 800L) {
+        if (!isConnected) return
+        val json = JSONObject().apply {
+            put("type", "INPUT_EVENT")
+            put("sessionId", currentSessionId)
+            put("subType", "TOUCH_LONG_PRESS")
+            put("normalizedX", normX.toDouble())
+            put("normalizedY", normY.toDouble())
+            put("durationMs", durationMs)
             put("timestamp", System.currentTimeMillis())
         }
         webSocket?.send(json.toString())
