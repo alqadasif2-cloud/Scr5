@@ -1,0 +1,6 @@
+{
+  "name": "Smart Remote Control - Android Multi-Version Compatibility & Permission Suite",
+  "description": "منظومة التحكم الذكي عن بعد وإدارة التوافقية الواسعة لإصدارات Android ومصفوفة الصلاحيات المتقدمة",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

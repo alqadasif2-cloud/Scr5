@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- ترويسة التطبيق -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="@color/text_primary"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="منظومة التحكم عن بعد المتقدمة (Windows &amp; Android)"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- شريط التبديل بين الخيارين الرئيسيين -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/surface"
+            android:padding="4dp"
+            android:layout_marginBottom="16dp">
+
+            <Button
+                android:id="@+id/btn_tab_control"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/tab_control_device"
+                android:backgroundTint="@color/primary"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_tab_share"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/tab_share_screen"
+                android:backgroundTint="@color/surface"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- لوحة الحالة العامة وإصدار Android -->
+        <TextView
+            android:id="@+id/tv_system_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/surface"
+            android:padding="12dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:layout_marginBottom="16dp" />
+
+        <!-- ================= القسم الأول: التحكم في جهاز آخر (Client Mode) ================= -->
+        <LinearLayout
+            android:id="@+id/layout_control_mode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="اختر نوع الجهاز المستهدف:"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <!-- اختيار نوع الجهاز المستهدف -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <Button
+                    android:id="@+id/btn_target_windows"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/target_windows_pc"
+                    android:backgroundTint="@color/primary"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btn_target_android"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/target_android_phone"
+                    android:backgroundTint="@color/surface"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginStart="6dp"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_target_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="التحكم من الهاتف في كمبيوتر Windows: مشاهدة سطح المكتب والماوس ولوحة المفاتيح"
+                android:textColor="@color/accent"
+                android:textSize="12sp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- حقول الإدخال للاتصال -->
+            <EditText
+                android:id="@+id/et_target_ip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/client_ip_hint"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:inputType="textUri"
+                android:background="@color/surface"
+                android:padding="12dp"
+                android:layout_marginBottom="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="14dp">
+
+                <EditText
+                    android:id="@+id/et_target_port"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="المنفذ: 52840"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:inputType="number"
+                    android:background="@color/surface"
+                    android:padding="12dp"
+                    android:layout_marginEnd="6dp" />
+
+                <EditText
+                    android:id="@+id/et_target_pin"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:hint="@string/client_pin_hint"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:background="@color/surface"
+                    android:padding="12dp"
+                    android:layout_marginStart="6dp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_connect_target"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_start_remote_control"
+                android:backgroundTint="@color/primary"
+                android:textColor="@color/text_primary"
+                android:padding="14dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
+
+        <!-- ================= القسم الثاني: مشاركة شاشة هذا الجهاز (Host Mode) ================= -->
+        <LinearLayout
+            android:id="@+id/layout_share_mode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/host_info_title"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/surface"
+                android:padding="14dp"
+                android:layout_marginBottom="14dp">
+
+                <TextView
+                    android:id="@+id/tv_host_device_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="اسم الجهاز: هاتف Android"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:id="@+id/tv_host_device_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/host_device_type"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:id="@+id/tv_host_ip_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="عنوان الاتصال المحلي (IP): جارِ الفحص..."
+                    android:textColor="@color/accent"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:id="@+id/tv_host_pin_display"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="رمز PIN للاقتران: 123456"
+                    android:textColor="#38BDF8"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <Button
+                    android:id="@+id/btn_generate_pin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_generate_new_pin"
+                    android:backgroundTint="@color/background"
+                    android:textColor="@color/text_primary"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_host_connection_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/host_status_idle"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:background="@color/surface"
+                android:padding="12dp"
+                android:layout_marginBottom="14dp" />
+
+            <!-- أزرار بدء / إيقاف البث واستضافة الشاشة -->
+            <Button
+                android:id="@+id/btn_toggle_cast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_start_cast"
+                android:backgroundTint="@color/accent"
+                android:textColor="@color/text_primary"
+                android:padding="14dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp" />
+
+            <Button
+                android:id="@+id/btn_emergency_stop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_stop_cast"
+                android:backgroundTint="@color/danger"
+                android:textColor="@color/text_primary"
+                android:padding="12dp"
+                android:visibility="gone"
+                android:layout_marginBottom="14dp" />
+
+            <Button
+                android:id="@+id/btn_accessibility_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_open_accessibility"
+                android:backgroundTint="@color/surface"
+                android:textColor="@color/text_secondary"
+                android:padding="12dp"
+                android:textSize="12sp"
+                android:layout_marginBottom="14dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

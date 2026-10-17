@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Smart Remote Control</string>
+    <string name="channel_screen_cast">خدمة بث الشاشة والتحكم المباشر</string>
+    <string name="channel_screen_cast_desc">إشعار أمان دائم يظهر طوال مدة مشاركة الشاشة مع الأجهزة الأخرى</string>
+    <string name="channel_pc_host">خدمة استضافة شاشة الكمبيوتر</string>
+    <string name="channel_pc_host_desc">تنبيه مستمر أثناء تحكم كمبيوتر Windows في الهاتف</string>
+
+    <string name="cast_active_title">مشاركة الشاشة نشطة</string>
+    <string name="cast_active_desc">يتم الآن بث شاشة الهاتف إلى الجهاز المتصل</string>
+    <string name="btn_start_cast">بدء مشاركة شاشة هذا الجهاز</string>
+    <string name="btn_stop_cast">إيقاف الجلسة والبث فوراً</string>
+
+    <string name="cast_started">بدأت جلسة مشاركة الشاشة بنجاح</string>
+    <string name="cast_stopped">تم إنهاء مشاركة الشاشة وحظر أوامر التحكم</string>
+    <string name="cast_permission_denied">تم إلغاء أو رفض إذن مشاركة الشاشة MediaProjection</string>
+
+    <string name="tab_control_device">التحكم في جهاز آخر</string>
+    <string name="tab_share_screen">مشاركة شاشة هذا الجهاز</string>
+
+    <string name="target_windows_pc">كمبيوتر Windows</string>
+    <string name="target_android_phone">هاتف Android آخر</string>
+
+    <string name="host_info_title">معلومات استضافة هذا الجهاز (Host Mode)</string>
+    <string name="host_device_name">اسم الجهاز:</string>
+    <string name="host_device_type">نوع الجهاز: هاتف Android</string>
+    <string name="host_connection_address">عنوان الاتصال المحلي (IP):</string>
+    <string name="host_pin_label">رمز الأمان (PIN) للاقتران:</string>
+    <string name="host_status_idle">الحالة: غير متصل (بانتظار بدء المشاركة)</string>
+    <string name="host_status_waiting">الحالة: الخادم جاهز بانتظار اتصال الطرف الآخر</string>
+    <string name="host_status_connected">الحالة: متصل نشط ويتم استقبال أوامر التحكم</string>
+
+    <string name="client_connect_title">إعدادات الاتصال بالجهاز المستهدف</string>
+    <string name="client_ip_hint">عنوان IP للجهاز المستهدف (مثال: 192.168.1.100)</string>
+    <string name="client_port_hint">المنفذ (الافتراضي: 52840)</string>
+    <string name="client_pin_hint">رمز PIN للمصادقة (6 أرقام)</string>
+    <string name="btn_start_remote_control">بدء الاتصال والتحكم المباشر</string>
+
+    <string name="error_invalid_ip">يرجى إدخال عنوان IP صالح للجهاز المستهدف</string>
+    <string name="error_invalid_pin">رمز PIN يجب أن يتكون من 6 أرقام مطابقة للجهاز الآخر</string>
+    <string name="error_accessibility_required">يتطلب التحكم باللمس تفعيل خدمة إمكانية الوصول AccessibilityService أولاً</string>
+
+    <string name="btn_open_accessibility">تفعيل إمكانية الوصول للتحكم باللمس</string>
+    <string name="btn_generate_new_pin">توليد PIN جديد</string>
+</resources>

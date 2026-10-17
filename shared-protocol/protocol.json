@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SmartRemoteSharedProtocol",
+  "version": "1.1.0",
+  "description": "بروتوكول الاتصال المحلي الموحد لنظام Smart Remote Control بين أنظمة Android و Windows وشبكة الويب",
+  "defaultPort": 52840,
+  "discovery": {
+    "multicastAddress": "239.255.52.84",
+    "discoveryPort": 52841,
+    "intervalMs": 2000
+  },
+  "packetTypes": {
+    "HANDSHAKE_HELLO": {
+      "code": 100,
+      "description": "إعلان الجهاز عن وجوده والقدرات المدعومة",
+      "fields": {
+        "deviceId": "string (UUID)",
+        "deviceName": "string",
+        "platform": "enum: ['windows', 'android', 'web_client']",
+        "appVersion": "string",
+        "supportedRoles": "array: ['host', 'client', 'bidirectional']",
+        "capabilities": {
+          "maxResolution": "string (e.g. 1920x1080)",
+          "maxFps": "number",
+          "codecs": "array: ['H264', 'H265', 'VP8', 'JPEG_BURST']",
+          "supportsMouseInjection": "boolean",
+          "supportsKeyboardInjection": "boolean",
+          "supportsTouchInjection": "boolean"
+        }
+      }
+    },
+    "SESSION_REQUEST": {
+      "code": 101,
+      "description": "طلب بدء جلسة تحكم عن بعد جديدة",
+      "fields": {
+        "sessionId": "string",
+        "initiatorId": "string",
+        "targetId": "string",
+        "requestedRole": "enum: ['view_only', 'full_control', 'audio_only']",
+        "sessionPin": "string (6 digits)",
+        "requestedResolution": "string",
+        "targetFps": "number"
+      }
+    },
+    "SESSION_RESPONSE": {
+      "code": 102,
+      "description": "رد الجهاز المستهدف بالموافقة أو الرفض",
+      "fields": {
+        "sessionId": "string",
+        "accepted": "boolean",
+        "rejectionReason": "string (optional)",
+        "assignedStreamPort": "number",
+        "encryptionPublicKey": "string (optional)"
+      }
+    },
+    "INPUT_EVENT": {
+      "code": 200,
+      "description": "حزمة أوامر الفأرة واللمس ولوحة المفاتيح",
+      "fields": {
+        "sessionId": "string",
+        "sequence": "number",
+        "timestamp": "number (epoch ms)",
+        "type": "enum: ['MOUSE_MOVE', 'MOUSE_DOWN', 'MOUSE_UP', 'MOUSE_WHEEL', 'KEY_DOWN', 'KEY_UP', 'TOUCH_TAP', 'TOUCH_SWIPE', 'ANDROID_GLOBAL_ACTION']",
+        "normalizedX": "number (0.0 to 1.0)",
+        "normalizedY": "number (0.0 to 1.0)",
+        "button": "enum: ['left', 'right', 'middle'] (optional)",
+        "wheelDelta": "number (optional)",
+        "keyCode": "number (optional)",
+        "keyText": "string (optional)",
+        "modifiers": "array: ['ctrl', 'alt', 'shift', 'win'] (optional)",
+        "globalAction": "enum: ['BACK', 'HOME', 'RECENTS', 'NOTIFICATIONS'] (optional)"
+      }
+    },
+    "SCREEN_FRAME_CHUNK": {
+      "code": 300,
+      "description": "بيانات إطار الشاشة المضغوطة",
+      "fields": {
+        "sessionId": "string",
+        "frameIndex": "number",
+        "format": "enum: ['H264_NALU', 'JPEG', 'WEBP']",
+        "width": "number",
+        "height": "number",
+        "payloadBase64": "string (or binary WebSocket frame)"
+      }
+    },
+    "QUALITY_ADJUSTMENT": {
+      "code": 400,
+      "description": "تعديل ديناميكي لجودة البث استجابة لظروف الشبكة",
+      "fields": {
+        "targetBitrateKbps": "number",
+        "targetFps": "number",
+        "scaleFactor": "number (e.g. 0.5, 0.75, 1.0)"
+      }
+    },
+    "HEARTBEAT": {
+      "code": 500,
+      "description": "نبضات حيوية للتحقق من استمرار الاتصال وقياس زمن الاستجابة RTT",
+      "fields": {
+        "clientTimestamp": "number",
+        "serverTimestamp": "number"
+      }
+    },
+    "DISCONNECT": {
+      "code": 900,
+      "description": "إنهاء الجلسة فوراً وتحرير كافة الموارد",
+      "fields": {
+        "sessionId": "string",
+        "reason": "enum: ['user_requested', 'timeout', 'security_revoke', 'error']"
+      }
+    }
+  }
+}

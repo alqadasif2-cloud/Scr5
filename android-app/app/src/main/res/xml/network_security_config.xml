@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- تمكين الاتصال المباشر غير المشفر (Cleartext HTTP / WS) على الشبكات المحلية والإنترنت -->
+    <!-- يحل جذرياً خطأ: CLEARTEXT communication to [IP] not permitted by network security policy على Android 9+ (API 28 فما فوق حتى Android 15 / API 35) -->
+    <!-- ملاحظة هندسية: لا يقبل عنصر <domain> عناوين IP (RFC 1918)، وتضمينها يؤدي لفشل التحليل البرمجي في XmlConfigSource -->
+    <!-- لذلك فإن <base-config cleartextTrafficPermitted="true"> هي الطريقة القياسية المعتمدة لسماح الاتصال بكافة عناوين IP المحلية والخارجية -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
