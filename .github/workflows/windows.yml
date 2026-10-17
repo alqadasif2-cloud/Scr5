@@ -1,0 +1,87 @@
+name: Build Smart Remote Control Windows
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+  workflow_dispatch:
+    inputs:
+      configuration:
+        description: 'Build Configuration (Release or Debug)'
+        required: true
+        default: 'Release'
+        type: choice
+        options:
+          - Release
+          - Debug
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  build-windows:
+    name: Build Windows Application (.NET 8 WinExe)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Validate Windows Project Structure
+        shell: pwsh
+        run: |
+          Write-Host "=== التحقق من بنية مشروع Windows ==="
+          if (-not (Test-Path "windows-app/SmartRemoteControl.Windows.csproj")) {
+            Write-Error "ERROR: windows-app/SmartRemoteControl.Windows.csproj does not exist!"
+            exit 1
+          }
+          if (-not (Test-Path "windows-app/Program.cs")) {
+            Write-Error "ERROR: windows-app/Program.cs does not exist!"
+            exit 1
+          }
+          Write-Host "✓ تم التحقق بنجاح من وجود ملفات مشروع Windows الأساسية."
+
+      - name: Set up .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore NuGet Dependencies
+        shell: pwsh
+        run: |
+          dotnet restore windows-app/SmartRemoteControl.Windows.csproj
+
+      - name: Build Windows Project
+        shell: pwsh
+        run: |
+          dotnet build windows-app/SmartRemoteControl.Windows.csproj -c Release --no-restore
+
+      - name: Publish Self-Contained Windows Executable
+        shell: pwsh
+        run: |
+          dotnet publish windows-app/SmartRemoteControl.Windows.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./windows-app/publish
+
+      - name: Verify Executable Output
+        shell: pwsh
+        run: |
+          Write-Host "=== فحص ملف الـ EXE الناتج ==="
+          $exePath = "windows-app/publish/SmartRemoteControl.Windows.exe"
+          if (-not (Test-Path $exePath)) {
+            Write-Error "ERROR: Could not find generated executable at $exePath!"
+            Get-ChildItem -Path "windows-app/publish" -Recurse
+            exit 1
+          }
+          $item = Get-Item $exePath
+          Write-Host "✓ تم بناء الملف التنفيذي لـ Windows بنجاح: $($item.FullName) ($([Math]::Round($item.Length / 1MB, 2)) MB)"
+
+      - name: Upload Windows Executable to GitHub Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SmartRemoteControl-Windows-EXE
+          path: windows-app/publish/*
+          retention-days: 30
+          if-no-files-found: error
